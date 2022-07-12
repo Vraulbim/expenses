@@ -2,22 +2,14 @@ import 'dart:math';
 
 import 'package:expenses/components/chart.dart';
 import 'package:expenses/components/transaction_form.dart';
+import 'package:expenses/helpers/theme_helper.dart';
 import 'package:flutter/material.dart';
 
 import 'components/transaction_list.dart';
 import 'models/transaction.dart';
 
 main() {
-  runApp(ExpansesApp());
-}
-
-class ThemeHelper {
-  bool darkMode = false;
-  static ThemeHelper instance = ThemeHelper();
-
-  static updateTheme() {
-    instance.darkMode = !instance.darkMode;
-  }
+  runApp(const ExpansesApp());
 }
 
 class ExpansesApp extends StatefulWidget {
@@ -69,13 +61,13 @@ class _ExpansesAppState extends State<ExpansesApp> {
                 color: Colors.black54
               ),
               colorScheme: const ColorScheme.dark().copyWith(
-                  primary: Colors.blue, secondary: Colors.blue[300], background: Colors.black54),
+                  primary: Colors.red, secondary: Colors.red[300], background: Colors.black54),
               textTheme: theme.textTheme.copyWith(                
                   headline6: const TextStyle(
                       fontFamily: 'OpenSans',
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.blue),
+                      color: Colors.red),
                   bodyText1: const TextStyle(
                       fontFamily: 'OpenSans',
                       fontSize: 15,
@@ -100,13 +92,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Transaction> _transactions = [
-    Transaction(
-        id: 't1',
-        title: 'Playstation 5',
-        date: DateTime.now().subtract(const Duration(days: 3)),
-        value: 200.00)
-  ];
+  final List<Transaction> _transactions = [];
 
   List<Transaction> get _recentTransactions {
     return _transactions.where((t) {
@@ -114,18 +100,26 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  _addTransaction(String title, double value) {
+  _addTransaction(String title, double value, DateTime date) {
     final newTransaction = Transaction(
         id: Random().nextDouble().toString(),
         title: title,
         value: value,
-        date: DateTime.now());
+        date: date);
 
     setState(() {
       _transactions.add(newTransaction);
     });
 
     Navigator.of(context).pop();
+  }
+
+  _deleteTransaction(String id){
+    setState(() {
+      _transactions.removeWhere((tr){
+        return tr.id == id;
+      });
+    });
   }
 
   _openTransactionFormModal(BuildContext context) {
@@ -155,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Chart(transactions: _recentTransactions),
-            TransactionList(transactions: _transactions),
+            TransactionList(transactions: _transactions, onRemove: _deleteTransaction),
           ],
         ),
       ),

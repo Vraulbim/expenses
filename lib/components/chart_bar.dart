@@ -13,14 +13,17 @@ class ChartBar extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          'R\$${value.toStringAsFixed(2).replaceAll('.', ',')}',
-          style: const TextStyle(
-            fontSize: 10
-          ),
-          ),
+      Container(
+        padding: EdgeInsets.all(8),
+        height: 30,
+        child: FittedBox(
+          child: Text(
+            'R\$${value.toStringAsFixed(2).replaceAll('.', ',')}',
+            style: const TextStyle(
+              fontSize: 20
+            ),
+            ),
+        ),
       ),
       SizedBox(
         height: 60, 
@@ -28,7 +31,7 @@ class ChartBar extends StatelessWidget {
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: [
-            Container(
+            Container(                            
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Theme.of(context).colorScheme.primary,
@@ -39,7 +42,7 @@ class ChartBar extends StatelessWidget {
               ),
             ),
             FractionallySizedBox(
-              heightFactor: 0.5,
+              heightFactor: percentage,
               child: Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary,

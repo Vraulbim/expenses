@@ -25,12 +25,19 @@ class Chart extends StatelessWidget {
          if(sameDay && sameMonth && sameYear){
           totalSum += transaction.value;
          }
-      }
+      }      
 
       return {
         'day': DateFormat.E().format(weekDay).substring(0, 3), 
         'value': totalSum
         };
+    }).reversed.toList();
+  }
+
+  double get _weekTotalValue {
+
+    return groupedTransactions.fold(0.0, (sum, tr){
+      return sum + (tr['value'] as double);
     });
   }
 
@@ -41,12 +48,15 @@ class Chart extends StatelessWidget {
       elevation: 6,
       margin: const EdgeInsets.all(6),
       child: Row(        
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: groupedTransactions.map((transactionGroup){
-          return ChartBar(
-            label: transactionGroup['day'].toString(),
-            value: double.parse(transactionGroup['value'].toString()),
-            percentage: 0,
+          return Flexible(
+            fit: FlexFit.tight,
+            child: ChartBar(
+              label: transactionGroup['day'].toString(),
+              value: double.parse(transactionGroup['value'].toString()),
+              percentage: _weekTotalValue == 0 ? 0 : (transactionGroup['value'] as double) / _weekTotalValue,
+            ),
           );
         }).toList()        
       ),
